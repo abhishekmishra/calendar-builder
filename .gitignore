@@ -5,3 +5,8 @@
 *.scm~
 *.scm#*
 .#*.scm
+
+#for drracket
+compiled
+*.bak
+*.png
