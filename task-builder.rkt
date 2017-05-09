@@ -26,8 +26,12 @@
     (define tasks '())
 
     ; Add a new task to the tasks list
-    (define/public (add-task t)
-      (set! tasks (append tasks (list t))))
+    (define/public (add-task name predicate)
+      (set! tasks (append tasks
+                          (list
+                           (make-object task%
+                             name
+                             predicate)))))
 
     ; Getter for the task list
     (define/public (get-tasks)
@@ -50,24 +54,22 @@
     
     ; Add a daily task to the task list
     (define/public (add-daily-task name start-date end-date)
-      (add-task (make-object task%
-                  name
-                  (interval-check-creator
-                   start-date
-                   end-date
-                   (lambda (date) #t)))))
+      (add-task name
+                (interval-check-creator
+                 start-date
+                 end-date
+                 (lambda (date) #t))))
 
     ; Add a task for weekdays
     (define/public (add-weekly-task name start-date end-date for-weekdays)
-      (add-task (make-object task%
-                  name
-                  (interval-check-creator
-                   start-date
-                   end-date
-                   (lambda (date)
-                     (ormap (lambda (wd)
-                              (eq? (greg:->iso-wday date) wd))
-                            for-weekdays))))))
+      (add-task  name
+                 (interval-check-creator
+                  start-date
+                  end-date
+                  (lambda (date)
+                    (ormap (lambda (wd)
+                             (eq? (greg:->iso-wday date) wd))
+                           for-weekdays)))))
 
     ; Add a task for Mondays
     (define/public (add-monday-task name start-date end-date)
@@ -116,16 +118,11 @@
 ; some test code for task%
 (define tl (make-object task-builder%))
 
-(define tone (make-object task% "task1"))
-(define ttwo (make-object task%
-               "task1"
-               (lambda (date)
-                 (if (eq? (greg:->iso-wday date) 1)
-                     #t
-                     #f))))
-
-(send tl add-task tone)
-(send tl add-task ttwo)
+(send tl add-task "task1" (lambda (date) #t))
+(send tl add-task "task2" (lambda (date)
+                            (if (eq? (greg:->iso-wday date) 1)
+                                #t
+                                #f)))
 
 (get-field task-name (first (send tl get-tasks)))
 (define tp (get-field task-predicate (first (send tl get-tasks))))
