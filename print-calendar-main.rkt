@@ -30,7 +30,4 @@
 (define cal (make-object task-calendar%))
 (send cal make-calendar first-day-of-this-month tasks-for-date)
 (send cal show-calendar-in-interactions)
-;write to png
-;(send target save-file "calendar.png" 'png)
-
-
+(send cal print-calendar "calendar.jpg" 'jpeg)

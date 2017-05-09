@@ -16,6 +16,7 @@
 ;; Define calendar day box with
 (define DAY-BOX-WIDTH 150)
 (define DAY-BOX-HEIGHT 200)
+(define HEADER-HEIGHT 50)
 
 ;(define draw-calendar-interface<%>
 ;  (interface () make-calendar show-calendar-in-interactions print-calendar))
@@ -24,25 +25,37 @@
   (class object%
     (super-new)
     ;; Calendar functions
-    (define target (make-bitmap 1200 1200))
+    (define target (make-bitmap (+ HEADER-HEIGHT (* DAY-BOX-HEIGHT 5)) (* DAY-BOX-WIDTH 7)))
     (define dc (new bitmap-dc% [bitmap target]))
 
     ; See documentation about smoothing
     ; This mode makes the pen fall on whole pixels
     (send dc set-smoothing 'aligned)
 
+    ; Makes a box at 0,0 (used for each calendar day)
+    ; with constant width/height
     (define (draw-day-box)
       (send dc draw-rectangle
             0 0 ; origin  
             DAY-BOX-WIDTH DAY-BOX-HEIGHT) ; width and height
       )
 
+    ; Makes a box (used as a check-box)
     (define (draw-check-box)
       (send dc draw-rectangle
             0 5 ; origin  
             10 10) ; width and height
       )
 
+    ; Makes a box for the header text
+    (define (header-box)
+      (send dc draw-rectangle
+            0 0 ; origin  
+            (* 7 DAY-BOX-WIDTH) HEADER-HEIGHT) ; width and height
+      )
+
+    ; Gets the start day for the calendar,
+    ; which is the Monday of the week of the date provided
     (define (get-start-day-for-calendar d)
       (greg:-days d (- (greg:->iso-wday d) 1)))
 
@@ -80,8 +93,10 @@
     ; date and returns a list of task names for the
     ; date.
     (define/public (make-calendar start-day tasks-for-date)
-
+      (define start-state (send dc get-transformation))
+      
       ;; Write the calendar header
+      (header-box)
       (send dc translate (* 3 DAY-BOX-WIDTH) 0)
       (send dc
             draw-text
@@ -91,7 +106,7 @@
             5
             1)
 
-      (send dc translate (* -3 DAY-BOX-WIDTH) 50)
+      (send dc translate (* -3 DAY-BOX-WIDTH) HEADER-HEIGHT)
   
       ; Save the original transformation of the
       ; drawing so that we can restore it at any point
@@ -109,11 +124,19 @@
           (send dc draw-text (get-day-for-calendar-location start-day column row)  5 1)
 
           (send dc translate 20 0)
-          (write-lines-in-box (tasks-for-date #f)))))
+          (write-lines-in-box (tasks-for-date #f))))
 
+      (send dc set-transformation start-state))
+
+    ; Shows the calendar in the interactions window.
+    ; Useful for debugging
     (define/public (show-calendar-in-interactions)
       ;show on interactions window
       (make-object image-snip% target))
+
+    ; Create calendar at location given by filename
+    (define/public (print-calendar filename type)
+      (send target save-file filename type 100 #:unscaled? #t))
     ))
 
 
