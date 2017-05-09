@@ -59,17 +59,19 @@
     (define (get-start-day-for-calendar d)
       (greg:-days d (- (greg:->iso-wday d) 1)))
 
+    (define (get-current-day start-day column row)
+      (greg:+days
+       (get-start-day-for-calendar start-day)
+       (+ column (* row 7)))
+      )
+
     ; A utility function to get the date display string
     ; for the date box at the given column and row
     ;
     ; The dates start for the Monday of the week of
     ; the first day of the month
-    (define (get-day-for-calendar-location start-day column row)
-      (parameterize ([current-locale "en"])
-        (greg:~t (greg:+days
-                  (get-start-day-for-calendar start-day)
-                  (+ column (* row 7)))
-                 "E MMMM d")))
+    (define (get-day-for-calendar-location current-day)
+      (parameterize ([current-locale "en"]) (greg:~t current-day "E MMMM d")))
 
     ; Write the task linex alongwith checkboxes
     ; inside the day box
@@ -119,12 +121,13 @@
         (for ([column (in-range 7)])
           (send dc set-transformation orig-transformation)
           (send dc translate (* column DAY-BOX-WIDTH) (* row DAY-BOX-HEIGHT))
-      
+
+          (define current-day (get-current-day start-day column row))
           (draw-day-box)
-          (send dc draw-text (get-day-for-calendar-location start-day column row)  5 1)
+          (send dc draw-text (get-day-for-calendar-location current-day) 5 1)
 
           (send dc translate 20 0)
-          (write-lines-in-box (tasks-for-date #f))))
+          (write-lines-in-box (tasks-for-date current-day))))
 
       (send dc set-transformation start-state))
 

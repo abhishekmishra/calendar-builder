@@ -14,15 +14,23 @@
 (require (prefix-in greg: gregor))
 
 (require "draw-calendar.rkt")
+(require "task-builder.rkt")
 
-;; This function add a task by name
-;; for a particular date
-;; TODO
-(define (add-task taskname date)
-  #t)
+(define start-date (greg:date 2017 1 1))
+(define end-date (greg:date 2017 12 31))
+
+(define task-builder (make-object task-builder%))
+(send task-builder add-daily-task "learn russian" start-date end-date)
+(send task-builder add-daily-task "read book" start-date end-date)
+(send task-builder add-daily-task "profit" start-date end-date)
+
+(send task-builder add-weekly-task "run" start-date end-date '(2 4 6))
+(send task-builder add-weekly-task "harmonica" start-date end-date '(1 2 3))
+
+(send task-builder add-monday-task "watch a movie" start-date end-date)
 
 (define (tasks-for-date d)
-  '("learn russian" "prog practice" "harmonica" "run" "read book" "profit"))
+  (send task-builder tasks-for-date d))
 
 (define today (greg:today))
 (define first-day-of-this-month (greg:-days today (- (greg:->day today) 1)))
