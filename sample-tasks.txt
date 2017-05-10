@@ -3,4 +3,9 @@ end-date: 2017-06-01
 
 run: everyday
 learn russian: everyday
+effec java: everyday
+discip of prog: everyday
+security graham: everyday
+geb: everyday
+strength: weekdays->monday, wednesday
 harmonica: weekdays->tuesday, thursday
