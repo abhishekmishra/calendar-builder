@@ -1,0 +1,6 @@
+start-date: 2017-05-01
+end-date: 2017-06-01
+
+run: everyday
+learn russian: everyday
+harmonica: weekdays->tuesday, thursday
