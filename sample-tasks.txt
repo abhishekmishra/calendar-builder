@@ -1,5 +1,5 @@
-start-date: 2017-05-01
-end-date: 2017-06-01
+start-date: 2017-06-23
+end-date: 2017-08-01
 
 run: everyday
 learn russian: everyday
@@ -9,3 +9,4 @@ security graham: everyday
 geb: everyday
 strength: weekdays->monday, wednesday
 harmonica: weekdays->tuesday, thursday
+robotics: everyday
