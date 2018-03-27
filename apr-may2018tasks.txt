@@ -1,0 +1,8 @@
+start-date: 2018-03-27
+end-date: 2018-06-01
+
+run: everyday
+learn russian: everyday
+strength: weekdays->monday, wednesday
+write: everyday
+deeplearning.ai: everyday

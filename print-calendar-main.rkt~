@@ -35,7 +35,7 @@
 ;(define today (greg:today))
 ;(define first-day-of-this-month (greg:-days today (- (greg:->day today) 1)))
 
-(define task-reader (make-object task-reader% "apr-may2018tasks.txt"))
+(define task-reader (make-object task-reader% "sample-tasks.txt"))
 (send task-reader read-file)
 (define task-builder (send task-reader get-task-builder))
 (define cal (make-object task-calendar%))
